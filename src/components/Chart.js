@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import { Line } from 'react-chartjs-2';
 import moment from 'moment';
+import Tab from './Tab';
+import Tabs from './TabsMenu';
 
 export default class LineDemo extends Component {
 
@@ -18,7 +20,7 @@ export default class LineDemo extends Component {
       let airlyCaqiFromAirly = [];
       
       historyDataFromAirly = data.history;
-      {historyDataFromAirly.map((object, i) => datasFromAirly[i] = historyDataFromAirly[i].fromDateTime )}
+      {historyDataFromAirly.map((object, i) => datasFromAirly[i] = moment(historyDataFromAirly[i].fromDateTime).format('DD/MM HH:mm') )}
       {historyDataFromAirly.map((object, i) => pm25ValuesFromAirly[i] = object.values[1].value )}
       {historyDataFromAirly.map((object, i) => pm10ValuesFromAirly[i] = object.values[2].value )}
       {historyDataFromAirly.map((object, i) => airlyCaqiFromAirly[i] = object.indexes[0].value )}
@@ -66,8 +68,19 @@ export default class LineDemo extends Component {
 
   render() {
     return (
-      <div>
-        <h2>Line Example</h2>
+      <div className="informations__row">
+        <div class="row_name">Dane historyczne</div>
+        <Tabs className="tabs-wrapper" tabTitle="categoryMenu">
+          <Tab active="true" title="CAQI">
+            <div>CAQI</div>
+          </Tab>
+          <Tab title="PM">
+            <div>PM</div>
+          </Tab>
+          <Tab title="TEMPERATURA">
+            <div>TEMPERATURA</div>
+          </Tab>
+        </Tabs>
         {this.state.isLoaded ?  <Line ref="chart" data={this.state.chartData.lineChartData} /> : <div>Loading...</div>}
       </div>
     );

@@ -2,7 +2,7 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import './App.scss';
 import Tab from './components/Tab'
-import Tabs from './components/Tabs'
+import TabsMenu from './components/TabsMenu'
 import Chart from './components/Chart'
 import MapContainer from './components/MapContainer'
 
@@ -13,23 +13,23 @@ render() {
     <div>
       <div className="back-image"></div>
       <div className="main">
-        <Tabs className="tabs-wrapper">
-          <Tab active="true" title="AIRLY">
-            <div>AIRLY</div>
-          </Tab>
-          <Tab title="PG">
-            <div>PG</div>
-          </Tab>
-          <Tab title="PORÓWNANIE">
-            <div>PORÓWNANIE</div>
-          </Tab>
-        </Tabs>
+          <TabsMenu className="tabs-wrapper" tabTitle="mainMenu">
+            <Tab active="true" title="AIRLY">
+              <div>AIRLY</div>
+            </Tab>
+            <Tab title="PG">
+              <div>PG</div>
+            </Tab>
+            <Tab title="PORÓWNANIE">
+              <div>PORÓWNANIE</div>
+            </Tab>
+          </TabsMenu>
         <div className="content">
           <div className="container">
             <div className="row">
               <div className="col-7 col--no-padding">
                 <div className="informations">
-                  <Chart/>
+                    <Chart/>
                 </div>
               </div>
               <div className="col-5 col--no-padding">
