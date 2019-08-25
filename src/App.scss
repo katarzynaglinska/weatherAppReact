@@ -273,3 +273,15 @@ body{
         background-color: #f9f2f3;
     }
 }
+
+.menu-prediction__item{
+    width: 50%;
+    float: left;
+    text-align: center;
+    border-top: 2px #ccc2c2 solid;
+
+    &--selected{
+        border-top: 2px #878d90 solid;
+        background-color: #f9f2f3;
+    }
+}

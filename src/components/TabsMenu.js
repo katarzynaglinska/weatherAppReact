@@ -12,8 +12,18 @@ class TabsMenu extends React.Component {
           this.setState({
               activeIndex : key,
           });
-          
       }
+
+      handleOnClickCategory(key, event) {
+        let tabTitle = this.props.tabTitle;
+        let tab = this.props.children[key];
+        event.preventDefault();
+        this.setState({
+            activeIndex : key,
+        });
+        
+        tab.props.changeChartData(key, tabTitle);
+    }
   
       renderNavItem(key) {
           let tab = this.props.children[key];
@@ -24,14 +34,25 @@ class TabsMenu extends React.Component {
           );
       }
 
-      renderNavItemCategory(key) {
-        let tab = this.props.children[key];
-        return (
-          <div key={ key } className={ this.state.activeIndex == key ? 'menu-historic__item menu-historic__item--selected active' : 'menu-historic__item'} onClick={ this.handleOnClick.bind(this, key) }>
+      renderNavItemCategoryHistory(key) {
+            let tab = this.props.children[key];
+            var type = "history";
+            return (
+            <div key={ key } className={ this.state.activeIndex == key ? 'menu-historic__item menu-historic__item--selected active' : 'menu-historic__item'} onClick={this.handleOnClickCategory.bind(this, key)}>
               <span href="#">{ tab.props.title }</span>
           </div>
         );
-    }
+      }
+
+      renderNavItemCategoryPrediction(key) {
+            let tab = this.props.children[key];
+            var type = "prediction";
+            return (
+            <div key={ key } className={ this.state.activeIndex == key ? 'menu-prediction__item menu-prediction__item--selected' : 'menu-prediction__item'} onClick={this.handleOnClickCategory.bind(this, key)}>
+            <span href="#">{ tab.props.title }</span>
+        </div>
+        );
+      }
     
       render() {
           let index = 0;
@@ -63,9 +84,14 @@ class TabsMenu extends React.Component {
                                         </div>
                                     </div>
                 break;
-            case 'categoryMenu':
-                tabToBeDisplayed =  <div class="row__menu-historic">
-                                            { Object.keys(this.props.children).map(this.renderNavItemCategory.bind(this)) }
+            case 'categoryMenuHistory':
+                tabToBeDisplayed =  <div className="row__menu-historic">
+                                            { Object.keys(this.props.children).map(this.renderNavItemCategoryHistory.bind(this)) }
+                                    </div>
+                break;
+            case 'categoryMenuPrediction':
+                tabToBeDisplayed =  <div className="row__menu-prediction">
+                                            { Object.keys(this.props.children).map(this.renderNavItemCategoryPrediction.bind(this)) }
                                     </div>
                 break;
           }
