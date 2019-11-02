@@ -282,7 +282,7 @@ export default class Chart extends Component {
   }
 
   componentDidMount() {
-    let url = this.props.url;
+    let url = this.props.url2;
       //"https://airapi.airly.eu/v2/measurements/nearest?indexType=AIRLY_CAQI&lat=54.37108&lng=18.61796&maxDistanceKM=1&apikey=91IYoXFWJTxEuGLBOVr60JyFMvSSGN1y";
     fetch(url)
       .then(response => response.json())
@@ -290,51 +290,33 @@ export default class Chart extends Component {
       .catch();
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.url !== this.props.url) {
-      let url = this.props.url; 
-      fetch(url)
-        .then(response => response.json())
-        .then(this.buildList)
-        .catch(err => {
-          console.log("Error Reading data " + err);
-        });
-    }
-  }
+ /* componentDidUpdate(prevProps) {
+      if(this.props.name == "test"){
+        if (prevProps.url2 !== this.props.url2) {
+            console.log(this.props.city);
+            let url = this.props.url; 
+            fetch(url)
+              .then(response => response.json())
+              .then(this.buildList)
+              .catch(err => {
+                console.log("Error Reading data " + err);
+              });
+          }
+      }
+  }*/
 
   updateChart = airlyChartDataChangedType => {
-      if (airlyChartDataChangedType == "airlyChartDataHistoryChanged") {
-        if (this.state.airlyChartDataHistoryChanged) {
-          if (this.state.airlyChartDataHistory.isLoaded) {
-            if (this.state.airlyChartDataHistory.type == "line") {
-              return (
-                <Line
-                  ref="chart"
-                  data={this.state.airlyChartDataHistory.data}
-                  options={this.state.airlyChartDataHistory.options}
-                  redraw
-                />
-              );
-            } else {
-              return (
-                <Bar
-                  ref="chart"
-                  data={this.state.airlyChartDataHistory.data}
-                  options={this.state.airlyChartDataHistory.options}
-                  redraw
-                />
-              );
-            }
-          } else {
-            return <div>Loading...</div>;
-          }
-        } else {
+    console.log("updateChart SecondCity ");
+    if (airlyChartDataChangedType == "airlyChartDataHistoryChanged") {
+      if (this.state.airlyChartDataHistoryChanged) {
+        if (this.state.airlyChartDataHistory.isLoaded) {
           if (this.state.airlyChartDataHistory.type == "line") {
             return (
               <Line
                 ref="chart"
                 data={this.state.airlyChartDataHistory.data}
                 options={this.state.airlyChartDataHistory.options}
+                redraw
               />
             );
           } else {
@@ -343,42 +325,42 @@ export default class Chart extends Component {
                 ref="chart"
                 data={this.state.airlyChartDataHistory.data}
                 options={this.state.airlyChartDataHistory.options}
+                redraw
               />
             );
           }
+        } else {
+          return <div>Loading...</div>;
         }
       } else {
-        if (this.state.airlyChartDataForecastChanged) {
-          if (this.state.airlyChartDataForecast.isLoaded) {
-            if (this.state.airlyChartDataForecast.type == "line") {
-              return (
-                <Line
-                  ref="chart"
-                  data={this.state.airlyChartDataForecast.data}
-                  options={this.state.airlyChartDataForecast.options}
-                  redraw
-                />
-              );
-            } else {
-              return (
-                <Bar
-                  ref="chart"
-                  data={this.state.airlyChartDataForecast.data}
-                  options={this.state.airlyChartDataForecast.options}
-                  redraw
-                />
-              );
-            }
-          } else {
-            return <div>Loading...</div>;
-          }
+        if (this.state.airlyChartDataHistory.type == "line") {
+          return (
+            <Line
+              ref="chart"
+              data={this.state.airlyChartDataHistory.data}
+              options={this.state.airlyChartDataHistory.options}
+            />
+          );
         } else {
+          return (
+            <Bar
+              ref="chart"
+              data={this.state.airlyChartDataHistory.data}
+              options={this.state.airlyChartDataHistory.options}
+            />
+          );
+        }
+      }
+    } else {
+      if (this.state.airlyChartDataForecastChanged) {
+        if (this.state.airlyChartDataForecast.isLoaded) {
           if (this.state.airlyChartDataForecast.type == "line") {
             return (
               <Line
                 ref="chart"
                 data={this.state.airlyChartDataForecast.data}
                 options={this.state.airlyChartDataForecast.options}
+                redraw
               />
             );
           } else {
@@ -387,11 +369,33 @@ export default class Chart extends Component {
                 ref="chart"
                 data={this.state.airlyChartDataForecast.data}
                 options={this.state.airlyChartDataForecast.options}
+                redraw
               />
             );
           }
+        } else {
+          return <div>Loading...</div>;
+        }
+      } else {
+        if (this.state.airlyChartDataForecast.type == "line") {
+          return (
+            <Line
+              ref="chart"
+              data={this.state.airlyChartDataForecast.data}
+              options={this.state.airlyChartDataForecast.options}
+            />
+          );
+        } else {
+          return (
+            <Bar
+              ref="chart"
+              data={this.state.airlyChartDataForecast.data}
+              options={this.state.airlyChartDataForecast.options}
+            />
+          );
         }
       }
+    }
   };
 
 
@@ -423,7 +427,7 @@ export default class Chart extends Component {
               <div>TEMPERATURA</div>
             </Tab>
           </Tabs>
-          {  this.updateChart("airlyChartDataHistoryChanged") }
+          {this.updateChart("airlyChartDataHistoryChanged") }
         </div>
 
         <div className="informations__row">
