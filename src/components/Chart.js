@@ -20,6 +20,9 @@ export default class Chart extends Component {
   pm25ValuesFromAirlyForecast = [];
   caqiFromAirlyForecast = [];
   datasFromAirlyForecast = [];
+  //comparison
+
+
   state = {
     airlyChartDataHistory: {
       isLoaded: false
@@ -27,8 +30,12 @@ export default class Chart extends Component {
     airlyChartDataForecast: {
       isLoaded: false
     },
+    airlyChartDataMinMax: {
+      isLoaded: false
+    },
     airlyChartDataHistoryChanged: false,
     airlyChartDataForecastChanged: false,
+    airlyChartDataMinMaxChanged: false,
     dayNameOfWeek: "",
     dayDate: "",
     rateValue: "",
@@ -59,7 +66,8 @@ export default class Chart extends Component {
     }
     this.setState({
       airlyChartDataHistoryChanged: false,
-      airlyChartDataForecastChanged: false
+      airlyChartDataForecastChanged: false,
+      airlyChartDataMinMaxChanged: false
     });
     switch (tabNumber) {
       case "0":
@@ -179,6 +187,7 @@ export default class Chart extends Component {
   buildList = res => {
     this.dataFromAirlyCurrent = res.current;
     this.dataFromAirlyHistory = res.history;
+    console.log(this.dataFromAirlyHistory);
     this.dataFromAirlyForecast = res.forecast;
     {
       this.dataFromAirlyHistory.map(
@@ -206,7 +215,7 @@ export default class Chart extends Component {
     {
       this.dataFromAirlyHistory.map(
         (object, i) =>
-          (this.datasFromAirlyHistory[i] = moment(
+          (this.datasFromAirlyHistory[i] = moment.utc(
             this.dataFromAirlyHistory[i].fromDateTime
           ).format("DD/MM HH:mm"))
       );
@@ -231,7 +240,7 @@ export default class Chart extends Component {
     {
       this.dataFromAirlyForecast.map(
         (object, i) =>
-          (this.datasFromAirlyForecast[i] = moment(
+          (this.datasFromAirlyForecast[i] = moment.utc(
             this.dataFromAirlyForecast[i].fromDateTime
           ).format("DD/MM HH:mm"))
       );
@@ -253,10 +262,91 @@ export default class Chart extends Component {
     );
 
     this.setCurrentDataAirly();
+    this.createGraphHistoricMinMax("gda");
   };
 
+  createGraphHistoricMinMax = (type) => {
+    const arrMin = arr => Math.min(...arr);
+    const arrMax = arr => Math.max(...arr);
+    const arrAvg = arr => arr.reduce((a,b) => a + b, 0) / arr.length
+    var minCaquiHistory, minCaquiHistoryIndex, maxCaquiHistory, maxCaquiHistoryIndex, avgCaquiHistory, minArray, maxArray, avgArray;
+    if(type == "gda" ){
+        minCaquiHistory = arrMin(this.caqiFromAirlyHistory);
+        minCaquiHistoryIndex = this.caqiFromAirlyHistory.indexOf(minCaquiHistory);
+        maxCaquiHistory = arrMax(this.caqiFromAirlyHistory);
+        maxCaquiHistoryIndex = this.caqiFromAirlyHistory.indexOf(maxCaquiHistory);
+        avgCaquiHistory = arrAvg(this.caqiFromAirlyHistory).toFixed(2);;
+        minArray = Array(this.caqiFromAirlyHistory.length).fill(null);    
+        maxArray = Array(this.caqiFromAirlyHistory.length).fill(null); 
+        avgArray = Array(this.caqiFromAirlyHistory.length).fill(avgCaquiHistory); 
+        this.minArrayFirst= Array(this.caqiFromAirlyHistory.length).fill(null); 
+        this.minArrayFirst[minCaquiHistoryIndex] = minCaquiHistory;
+        this.maxArrayFirst= Array(this.caqiFromAirlyHistory.length).fill(null); 
+        this.maxArrayFirst[maxCaquiHistoryIndex] = maxCaquiHistory;
+        this.avgArrayFirst = avgArray;
+    }
+    else if(type == "gdy" ){
+        minCaquiHistory = arrMin(this.caqiHistoryGdy);
+        minCaquiHistoryIndex = this.caqiHistoryGdy.indexOf(minCaquiHistory);
+        maxCaquiHistory = arrMax(this.caqiHistoryGdy);
+        maxCaquiHistoryIndex = this.caqiHistoryGdy.indexOf(maxCaquiHistory);
+        avgCaquiHistory = arrAvg(this.caqiHistoryGdy).toFixed(2);;
+        minArray = Array(this.caqiHistoryGdy.length).fill(null);    
+        maxArray = Array(this.caqiHistoryGdy.length).fill(null); 
+        avgArray = Array(this.caqiHistoryGdy.length).fill(avgCaquiHistory);
+        this.minArraySecond= Array(this.caqiHistoryGdy.length).fill(null);
+        this.minArraySecond[minCaquiHistoryIndex] = minCaquiHistory;
+        this.maxArraySecond= Array(this.caqiFromAirlyHistory.length).fill(null); 
+        this.maxArraySecond[maxCaquiHistoryIndex] = maxCaquiHistory;
+        this.avgArraySecond = avgArray;
+    }
+
+    minArray[minCaquiHistoryIndex] = minCaquiHistory;
+    maxArray[maxCaquiHistoryIndex] = maxCaquiHistory;
+
+    this.setState({
+      airlyChartDataMinMax: {
+        type: 'line',
+        data: {
+            datasets: [
+                {
+                label: 'Wartość średnia',
+                data: avgArray,
+                fill: false,
+                type: 'line'
+            },
+            {
+                label: 'Maximum',
+                backgroundColor: "rgb(48, 134, 204)",
+                pointBackgroundColor: "rgb(48, 134, 204)",
+                pointBorderColor: "#55bae7",
+                data: maxArray
+            },
+            {
+                label: 'Minimum',
+                backgroundColor: "#18e02a",
+                pointBackgroundColor: "#18e02a",
+                pointBorderColor: "#18e02a",
+                data: minArray
+            },],
+            labels: this.datasFromAirlyHistory
+        },
+        options: {
+            legend: {
+                display: true
+            }
+        },
+        isLoaded: true
+      }
+    });
+
+    this.setState({ airlyChartDataMinMaxChanged: true });
+    //initVC.destroyChart(initVC.chartHistoryMinMax);
+    //initVC.chartHistoryMinMax = new Chart(initVC.chartAirlyHistoryIndexMinMax, chart);
+}
+
   setCurrentDataAirly = () => {
-    var day = moment(this.dataFromAirlyCurrent.fromDateTime, "YYYY-MM-DD HH:mm:ss");
+    var day = moment.utc(this.dataFromAirlyCurrent.fromDateTime, "YYYY-MM-DD HH:mm:ss");
     var dayNameOfWeek = day.format('dddd').charAt(0).toUpperCase() + day.format('dddd').slice(1);
     var dayDate = day.format('DD-MM-YYYY');
     var rate = this.dataFromAirlyCurrent.indexes[0].description;
@@ -347,6 +437,15 @@ export default class Chart extends Component {
             );
           }
         }
+      } else if(airlyChartDataChangedType == "airlyChartDataMinMaxChanged"){
+        return (
+          <Line
+            ref="chart"
+            data={this.state.airlyChartDataMinMax.data}
+            options={this.state.airlyChartDataMinMax.options}
+            redraw
+          />
+        );
       } else {
         if (this.state.airlyChartDataForecastChanged) {
           if (this.state.airlyChartDataForecast.isLoaded) {
@@ -425,7 +524,10 @@ export default class Chart extends Component {
           </Tabs>
           {  this.updateChart("airlyChartDataHistoryChanged") }
         </div>
-
+        <div className="informations__row">
+            <div className="row_name">Ekstrema ogólnej jakości powietrza (CAQUI)</div>
+            {  this.updateChart("airlyChartDataMinMaxChanged") }
+        </div>
         <div className="informations__row">
           <div className="row_name">Prognoza na nastepne dni</div>
           <Tabs className="tabs-wrapper" tabTitle="categoryMenuPrediction">

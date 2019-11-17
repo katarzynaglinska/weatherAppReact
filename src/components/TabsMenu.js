@@ -62,6 +62,40 @@ class TabsMenu extends React.Component {
     );
   }
 
+  renderNavItemCategoryHistoryComparison(key) {
+    let tab = this.props.children[key];
+    return (
+      <div
+        key={key}
+        className={
+          this.state.activeIndex == key
+            ? "menu-historic-comp__item menu-historic__item--25 menu-historic__item--selected active"
+            : "menu-historic-comp__item menu-historic__item--25"
+        }
+        onClick={this.handleOnClickCategory.bind(this, key)}
+      >
+        <span href="#">{tab.props.title}</span>
+      </div>
+    );
+  }
+
+  renderNavItemCategoryPredictionComparison(key) {
+    let tab = this.props.children[key];
+    return (
+      <div
+        key={key}
+        className={
+          this.state.activeIndex == key
+            ? "menu-prediction-comp__item menu-prediction__item--selected active"
+            : "menu-prediction-comp__item "
+        }
+        onClick={this.handleOnClickCategory.bind(this, key)}
+      >
+        <span href="#">{tab.props.title}</span>
+      </div>
+    );
+  }
+
   renderNavItemCategoryPrediction(key) {
     let tab = this.props.children[key];
     var type = "prediction";
@@ -129,6 +163,24 @@ class TabsMenu extends React.Component {
             )}
           </div>
         );
+        break;
+        case "categoryMenuHistoryComparison":
+          tabToBeDisplayed = (
+            <div className="row__menu-historic">
+              {Object.keys(this.props.children).map(
+                this.renderNavItemCategoryHistoryComparison.bind(this)
+              )}
+            </div>
+          );
+        break;
+        case "categoryMenuPredictionComparison":
+          tabToBeDisplayed = (
+            <div className="row__menu-historic">
+              {Object.keys(this.props.children).map(
+                this.renderNavItemCategoryPredictionComparison.bind(this)
+              )}
+            </div>
+          );
         break;
     }
 

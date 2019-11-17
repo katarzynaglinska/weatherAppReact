@@ -27,7 +27,7 @@ export class InformationsPg extends Component {
         this.dataFromPgCurrent = res;
 
         var mydate = this.convertDate(this.dataFromPgCurrent["Stacja Testowa"].date);
-        var day = moment(new Date(mydate), "YYYY-MM-DD HH:mm:ss");   
+        var day = moment.utc(new Date(mydate), "YYYY-MM-DD HH:mm:ss");   
         var dayNameOfWeek = day.format('dddd').charAt(0).toUpperCase() + day.format('dddd').slice(1);
         var dayDate = day.format('DD-MM-YYYY');
         var pm10 = this.dataFromPgCurrent["Stacja Testowa"].pm10;
