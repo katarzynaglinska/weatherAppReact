@@ -13,7 +13,6 @@ class TabsMenu extends React.Component {
     this.setState({
       activeIndex: key
     });
-
     tab.props.changeMenu(key, name);
   }
 
