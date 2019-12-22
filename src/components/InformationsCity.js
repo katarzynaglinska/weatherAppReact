@@ -257,7 +257,7 @@ export default class Chart extends Component {
       "chartDataForecast"
     );
 
-    this.setCurrentDataAirly();
+    this.setCurrentDataOnStart();
     this.createGraphHistoricMinMax("firstCity");
   };
 
@@ -339,7 +339,14 @@ export default class Chart extends Component {
     this.setState({ chartDataMinMaxChanged: true });
   }
 
-  setCurrentDataAirly = () => {
+  setCurrentData = () => {
+    var temperature = this.dataCityCurrent.values[5].value;
+    this.setState({
+      temperature: temperature,
+    });
+  }
+
+  setCurrentDataOnStart = () => {
     var day = moment.utc(this.dataCityCurrent.fromDateTime, "YYYY-MM-DD HH:mm:ss");
     var dayNameOfWeek = day.format('dddd').charAt(0).toUpperCase() + day.format('dddd').slice(1);
     var dayDate = day.format('DD-MM-YYYY');
@@ -365,6 +372,7 @@ export default class Chart extends Component {
     });
   }
 
+
   componentDidMount() {
     let url = this.props.url;
     fetch(url)
@@ -385,8 +393,8 @@ export default class Chart extends Component {
     }
   }
 
-  updateChart = airlyChartDataChangedType => {
-      if (airlyChartDataChangedType == "chartDataHistoryChanged") {
+  updateChart = chartDataChangedType => {
+      if (chartDataChangedType == "chartDataHistoryChanged") {
         if (this.state.chartDataHistoryChanged) {
           if (this.state.chartDataHistory.isLoaded) {
             if (this.state.chartDataHistory.type == "line") {
@@ -430,7 +438,7 @@ export default class Chart extends Component {
             );
           }
         }
-      } else if(airlyChartDataChangedType == "chartDataMinMaxChanged"){
+      } else if(chartDataChangedType == "chartDataMinMaxChanged"){
         return (
           <Line
             ref="chart"
@@ -487,13 +495,10 @@ export default class Chart extends Component {
   };
 
 
-
   render() {
-    let hasChanged = false;
-
     return (
       <div>
-        <CurrentData dayNameOfWeek={this.state.dayNameOfWeek} dayDate={this.state.dayDate} rate={this.state.rate}
+        <CurrentData cityName={this.props.cityName} dayNameOfWeek={this.state.dayNameOfWeek} dayDate={this.state.dayDate} rate={this.state.rate}
                      rateValue={this.state.rateValue} pm10={this.state.pm10} pm25={this.state.pm25} pm1={this.state.pm1}
                      temperature={this.state.temperature} pressure={this.state.pressure} humidity={this.state.humidity}/>
 
@@ -514,7 +519,7 @@ export default class Chart extends Component {
           {  this.updateChart("chartDataHistoryChanged") }
         </div>
         <div className="informations__row">
-            <div className="row_name">Ekstrema ogólnej jakości powietrza (CAQUI)</div>
+            <div className="row_name">Ekstrema ogólnej jakości powietrza (CAQI)</div>
             {  this.updateChart("chartDataMinMaxChanged") }
         </div>
         <div className="informations__row">

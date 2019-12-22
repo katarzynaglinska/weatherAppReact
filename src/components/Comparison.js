@@ -107,8 +107,6 @@ export default class Comparison extends Component {
         .utc(dataForecast.fromDateTime)
         .format("DD/MM HH:mm");
     }
-
-    this.changeChartDataOnload();
   };
 
   buildSecondCityData = res => {
@@ -117,6 +115,8 @@ export default class Comparison extends Component {
     this.dataSecondCityForecast = res.forecast;
     var dataHistory, dataForecast;
 
+    var isHistoryLoaded = false;
+    var isForecastLoaded = false;
     for (var j = 0; j < this.dataSecondCityHistory.length; j++) {
       dataHistory = this.dataSecondCityHistory[j];
       this.pm10SecondCityHistory[j] = dataHistory.values[2].value;
@@ -126,17 +126,21 @@ export default class Comparison extends Component {
       this.datasSecondCityHistory[j] = moment
         .utc(dataHistory.fromDateTime)
         .format("DD/MM HH:mm");
+      (j == this.dataSecondCityHistory.length-1) ? isHistoryLoaded = true : isHistoryLoaded = false;
     }
     for (var z = 0; z < this.dataSecondCityForecast.length; z++) {
       dataForecast = this.dataSecondCityForecast[z];
-      this.pm10FirstCityForecast[z] = dataForecast.values[0].value;
+      this.pm10SecondCityForecast[z] = dataForecast.values[0].value;
       this.pm25SecondCityForecast[z] = dataForecast.values[1].value;
       this.caqiSecondCityForecast[z] = dataForecast.indexes[0].value;
       this.datasSecondCityForecast[z] = moment
         .utc(dataForecast.fromDateTime)
         .format("DD/MM HH:mm");
+      (z == this.dataSecondCityForecast.length-1) ? isForecastLoaded = true : isForecastLoaded = false;
     }
-    this.changeChartDataOnload();
+    if(isHistoryLoaded == true && isForecastLoaded == true){
+      this.changeChartDataOnload();
+    }
   };
 
   changeChartDataOnload = () => {
@@ -156,44 +160,41 @@ export default class Comparison extends Component {
       chartDataForecastChanged: false,
       chartDataMinMaxChanged: false
     });
-
-    // to do
-    //console.log(this.datasFirstCityHistory)
-    //console.log(this.caqiFirstCityHistory)
-    //console.log(this.caqiSecondCityHistory)
-    console.log(this.datasFirstCityForecast)
-    console.log(this.caqiFirstCityForecast)
-    console.log(this.caqiSecondCityForecast)
-   
-     /* this.createChartSelected(
-        this.datasFirstCityHistory,
-        this.caqiFirstCityHistory,
-        this.caqiSecondCityHistory,
-        true,
-        "bar",
-        this.props.firstCity,
-        this.props.secondCity,
-        "chartDataHistory"
-      );
-      this.createChartSelected(
-        this.datasFirstCityForecast,
-        this.caqiFirstCityForecast,
-        this.caqiSecondCityForecast,
-        true,
-        "bar",
-        this.props.firstCity,
-        this.props.secondCity,
-        "chartDataForecast"
-      );
-*/
-      this.changeChartData("0");
-      //this.changeChartData("4")
-      this.createGraphHistoricMinMax(this.props.firstCity, this.props.secondCity);
-    
+    this.setState({
+      chartDataForecast: {
+        isLoaded: false
+      }
+    });
+    this.createChartSelected(
+      this.datasFirstCityHistory,
+      this.caqiFirstCityHistory,
+      this.caqiSecondCityHistory,
+      true,
+      "bar",
+      this.props.firstCity,
+      this.props.secondCity,
+      "chartDataHistory"
+    );
+    this.setState({
+      chartDataForecast: {
+        isLoaded: false
+      }
+    });
+    this.createChartSelected(
+      this.datasFirstCityForecast,
+      this.caqiFirstCityForecast,
+      this.caqiSecondCityForecast,
+      true,
+      "bar",
+      this.props.firstCity,
+      this.props.secondCity,
+      "chartDataForecast"
+    );
+    this.createGraphHistoricMinMax(this.props.firstCity, this.props.secondCity);
   };
 
+
   changeChartData = (tabNumber, tabTitle) => {
-    console.log("test change ");
     var lineChartDataCaqiHistory;
     if (tabTitle == "categoryMenuPredictionComparison") {
       tabNumber = parseInt(tabNumber) + 4;
@@ -472,8 +473,8 @@ export default class Comparison extends Component {
     }
   };
 
-  updateChart = airlyChartDataChangedType => {
-    if (airlyChartDataChangedType == "chartDataHistoryChanged") {
+  updateChart = chartDataChangedType => {
+    if (chartDataChangedType == "chartDataHistoryChanged") {
       if (this.state.chartDataHistoryChanged) {
         if (this.state.chartDataHistory.isLoaded) {
           if (this.state.chartDataHistory.type == "line") {
@@ -517,7 +518,7 @@ export default class Comparison extends Component {
           );
         }
       }
-    } else if (airlyChartDataChangedType == "chartDataMinMaxChanged") {
+    } else if (chartDataChangedType == "chartDataMinMaxChanged") {
       if (this.state.chartDataMinMax.isLoaded) {
         return (
           <Line
@@ -616,7 +617,7 @@ export default class Comparison extends Component {
         </div>
         <div className="informations__row">
           <div className="row_name">
-            Ekstrema ogólnej jakości powietrza (CAQUI)
+            Ekstrema ogólnej jakości powietrza (CAQI)
           </div>
           {this.updateChart("chartDataMinMaxChanged")}
         </div>

@@ -5,9 +5,6 @@ import Map from "./components/Map";
 import Comparison from "./components/Comparison";
 import InformationsCity from "./components/InformationsCity";
 
-const BLOCK = { diplay: "block" };
-const NONE = { diplay: "none" };
-
 class App extends React.Component {
   state = {
     currentView: "firstCityTab",
@@ -25,7 +22,6 @@ class App extends React.Component {
     secondCityLat: 54.5196057,
     secondCityLng: 18.53524
   };
-
   changeMenu = (name, e) => {
     this.setState({
       showViewFirstCity: false,
@@ -40,7 +36,6 @@ class App extends React.Component {
       this.setState({ showViewComparison: true });
     }
   };
-
   changeCity = (e, cityType) => {
     var chosenCity = e.target.value;
     var url = "";
@@ -75,7 +70,7 @@ class App extends React.Component {
         break;
       case "3":
         url =
-          "https://airapi.airly.eu/v2/measurements/nearest?indexType=AIRLY_CAQI&lat=50.05456&lng=19.942218&maxDistanceKM=1&apikey=91IYoXFWJTxEuGLBOVr60JyFMvSSGN1y";
+          "https://airapi.airly.eu/v2/measurements/nearest?indexType=AIRLY_CAQI&lat=50.0664&lng=19.9651&maxDistanceKM=1&apikey=91IYoXFWJTxEuGLBOVr60JyFMvSSGN1y";
         break;
       default:
         break;
@@ -86,7 +81,6 @@ class App extends React.Component {
       this.setState({ secondCityUrl: url });
     }
   };
-
   getCityInformations = cityType => {
     var informations = [];
     switch (cityType) {
@@ -115,11 +109,9 @@ class App extends React.Component {
     }
     return informations;
   };
-
   componentDidMount() {
     document.getElementById("selectSecondCity").value = 1;
   }
-
   render() {
     return (
       <div>
@@ -191,14 +183,14 @@ class App extends React.Component {
                       display: this.state.showViewFirstCity ? "block" : "none"
                     }}
                   >
-                    <div class="informations__row">
-                      <div class="choose-city">
-                        <div class="choose-city__title">
+                    <div className="informations__row">
+                      <div className="choose-city">
+                        <div className="choose-city__title">
                           <p>Wybierz miasto</p>
                         </div>
-                        <div class="choose-city__select">
+                        <div className="choose-city__select">
                           <select
-                            class="form-control"
+                            className="form-control"
                             id="selectFirstCity"
                             onChange={e => this.changeCity(e, "firstCity")}
                           >
@@ -210,11 +202,12 @@ class App extends React.Component {
                         </div>
                       </div>
                     </div>
-                    <div class="separator"></div>
+                    <div className="separator"></div>
                     <InformationsCity
                       url={this.state.firstCityUrl}
                       firstCity={this.state.firstCityName}
                       secondCity={this.state.secondCity}
+                      cityName={this.state.firstCityName}
                     />
                   </div>
                   <div
@@ -223,7 +216,7 @@ class App extends React.Component {
                       display: this.state.showViewSecondCity ? "block" : "none"
                     }}
                   >
-                    <div class="informations__row">
+                    <div className="informations__row">
                       <div className="choose-city-second">
                         <div className="choose-city__title">
                           <p>Wybierz miasto</p>
@@ -246,6 +239,7 @@ class App extends React.Component {
                       url={this.state.secondCityUrl}
                       firstCity={this.state.firstCityName}
                       secondCity={this.state.secondCity}
+                      cityName={this.state.secondCityName}
                     />
                   </div>
                   <div
@@ -284,5 +278,6 @@ class App extends React.Component {
     );
   }
 }
-
 export default App;
+
+

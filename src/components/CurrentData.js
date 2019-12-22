@@ -6,7 +6,7 @@ export class CurrentData extends Component {
       <div>
         <div className="informations__row">
           <div className="row__title">
-            <span className="name__data">AIRLY</span>{" "}
+            <span className="name__data">{this.props.cityName}</span>{" "}
             <span className="current-date__day-name">
               {this.props.dayNameOfWeek}
             </span>{" "}
