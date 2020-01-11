@@ -35,6 +35,9 @@ export default class Comparison extends Component {
   caqiSecondCityForecast = [];
   datasSecondCityForecast = [];
 
+  firstData = false;
+  secondData = false;
+
   state = {
     chartDataHistory: {
       isLoaded: false
@@ -107,6 +110,7 @@ export default class Comparison extends Component {
         .utc(dataForecast.fromDateTime)
         .format("DD/MM HH:mm");
     }
+    this.changeChartDataOnload();
   };
 
   buildSecondCityData = res => {
@@ -115,8 +119,6 @@ export default class Comparison extends Component {
     this.dataSecondCityForecast = res.forecast;
     var dataHistory, dataForecast;
 
-    var isHistoryLoaded = false;
-    var isForecastLoaded = false;
     for (var j = 0; j < this.dataSecondCityHistory.length; j++) {
       dataHistory = this.dataSecondCityHistory[j];
       this.pm10SecondCityHistory[j] = dataHistory.values[2].value;
@@ -126,8 +128,8 @@ export default class Comparison extends Component {
       this.datasSecondCityHistory[j] = moment
         .utc(dataHistory.fromDateTime)
         .format("DD/MM HH:mm");
-      (j == this.dataSecondCityHistory.length-1) ? isHistoryLoaded = true : isHistoryLoaded = false;
-    }
+   }
+    console.log("2222")
     for (var z = 0; z < this.dataSecondCityForecast.length; z++) {
       dataForecast = this.dataSecondCityForecast[z];
       this.pm10SecondCityForecast[z] = dataForecast.values[0].value;
@@ -136,62 +138,52 @@ export default class Comparison extends Component {
       this.datasSecondCityForecast[z] = moment
         .utc(dataForecast.fromDateTime)
         .format("DD/MM HH:mm");
-      (z == this.dataSecondCityForecast.length-1) ? isForecastLoaded = true : isForecastLoaded = false;
     }
-    if(isHistoryLoaded == true && isForecastLoaded == true){
-      this.changeChartDataOnload();
-    }
+    this.changeChartDataOnload();
   };
 
   changeChartDataOnload = () => {
-    this.setState({
-      chartDataForecast: {
-        isLoaded: false
-      },
-      chartDataHistory: {
-        isLoaded: false
-      },
-      chartDataMinMax: {
-        isLoaded: false
-      }
-    });
-    this.setState({
-      chartDataHistoryChanged: false,
-      chartDataForecastChanged: false,
-      chartDataMinMaxChanged: false
-    });
-    this.setState({
-      chartDataForecast: {
-        isLoaded: false
-      }
-    });
-    this.createChartSelected(
-      this.datasFirstCityHistory,
-      this.caqiFirstCityHistory,
-      this.caqiSecondCityHistory,
-      true,
-      "bar",
-      this.props.firstCity,
-      this.props.secondCity,
-      "chartDataHistory"
-    );
-    this.setState({
-      chartDataForecast: {
-        isLoaded: false
-      }
-    });
-    this.createChartSelected(
-      this.datasFirstCityForecast,
-      this.caqiFirstCityForecast,
-      this.caqiSecondCityForecast,
-      true,
-      "bar",
-      this.props.firstCity,
-      this.props.secondCity,
-      "chartDataForecast"
-    );
-    this.createGraphHistoricMinMax(this.props.firstCity, this.props.secondCity);
-  };
+      this.setState({
+        chartDataHistoryChanged: false,
+        chartDataForecastChanged: false,
+        chartDataMinMaxChanged: false,
+        chartDataHistory: {
+          isLoaded: false
+        },
+        chartDataForecast: {
+          isLoaded: false
+        },
+        chartDataMinMax: {
+          isLoaded: false
+        },
+      });
+      this.createChartSelected(
+        this.datasFirstCityHistory,
+        this.caqiFirstCityHistory,
+        this.caqiSecondCityHistory,
+        true,
+        "bar",
+        this.props.firstCity,
+        this.props.secondCity,
+        "chartDataHistory"
+      );
+      this.setState({
+        chartDataForecast: {
+          isLoaded: false
+        }
+      });
+      this.createChartSelected(
+        this.datasFirstCityForecast,
+        this.caqiFirstCityForecast,
+        this.caqiSecondCityForecast,
+        true,
+        "bar",
+        this.props.firstCity,
+        this.props.secondCity,
+        "chartDataForecast"
+      );
+      this.createGraphHistoricMinMax(this.props.firstCity, this.props.secondCity);
+    };
 
 
   changeChartData = (tabNumber, tabTitle) => {
@@ -465,7 +457,6 @@ export default class Comparison extends Component {
         }
       });
     }
-    console.log("chartType " + label2 + chartType);
     if (chartType == "chartDataHistory") {
       this.setState({ chartDataHistoryChanged: true });
     } else if (chartType == "chartDataForecast") {
@@ -509,13 +500,15 @@ export default class Comparison extends Component {
             />
           );
         } else {
-          return (
-            <Bar
-              ref="chart"
-              data={this.state.chartDataHistory.data}
-              options={this.state.chartDataHistory.options}
-            />
-          );
+          if(this.state.chartDataHistory.data && this.state.chartDataHistory.data!= "undefined"){
+            return (
+              <Bar
+                ref="chart"
+                data={this.state.chartDataHistory.data}
+                options={this.state.chartDataHistory.options}
+              />
+            );
+          }
         }
       }
     } else if (chartDataChangedType == "chartDataMinMaxChanged") {
@@ -564,13 +557,15 @@ export default class Comparison extends Component {
             />
           );
         } else {
-          return (
-            <Bar
-              ref="chart"
-              data={this.state.chartDataForecast.data}
-              options={this.state.chartDataForecast.options}
-            />
-          );
+          if(this.state.chartDataForecast.data && this.state.chartDataForecast.data!= "undefined"){
+            return (
+              <Bar
+                ref="chart"
+                data={this.state.chartDataForecast.data}
+                options={this.state.chartDataForecast.options}
+              />
+            );
+          }
         }
       }
     }

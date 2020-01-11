@@ -235,6 +235,7 @@ class App extends React.Component {
                         </div>
                       </div>
                     </div>
+                    <div className="separator"></div>
                     <InformationsCity
                       url={this.state.secondCityUrl}
                       firstCity={this.state.firstCityName}
